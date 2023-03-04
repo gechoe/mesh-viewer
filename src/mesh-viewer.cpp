@@ -20,10 +20,14 @@ public:
    MeshViewer() : Window() {
    }
 
-   void setup() {
+   void setup() override {
       filenames_vec = GetFilenamesInDir("../models", "ply");
-      curr_file = filenames_vec[0];
+      // curr_file = "cube.ply";//filenames_vec[0];
       // mesh.load("../models/cube.ply");
+
+      for (string file : filenames_vec) {
+         std::cout << file << std::endl;
+      }
    }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
@@ -50,15 +54,25 @@ public:
          if (curr_file_loc == filenames_vec.size()) {
             curr_file_loc = 0;
          }
+
+         curr_file = filenames_vec[curr_file_loc];
       } else if (key == GLFW_KEY_P) {
          curr_file_loc--;
          if (curr_file_loc == -1) {
             curr_file_loc = filenames_vec.size() - 1;
          }
+
+         curr_file = filenames_vec[curr_file_loc];
       }
    }
 
-   void draw() {
+   void changeMesh() {
+      mesh.load(curr_file);
+      // std::cout << mesh.numVertices() << std::endl;
+      renderer.mesh(mesh);
+   }
+
+   void draw() override {
       float aspect = ((float)width()) / height();
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       renderer.lookAt(eyePos, lookPos, up);
@@ -76,8 +90,11 @@ public:
       // renderer.scale(vec3(1,1,1));
       // renderer.translate(vec3(0,0,0));
       // renderer.mesh(mesh);
-      mesh = PLYMesh(curr_file);
-      renderer.mesh(mesh);
+      // std::cout << curr_file << std::endl;
+      changeMesh();
+      // mesh.load(curr_file);
+      // // std::cout << mesh.numVertices() << std::endl;
+      // renderer.mesh(mesh);
       // renderer.cube(); // for debugging!
       
       // for (int i = 0; i < filenames_vec.size(); i++) {

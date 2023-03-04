@@ -50,14 +50,18 @@ namespace agl {
 
       for (char c : number) {
          if (c >= '0' && c <= '9') {
-         i = i * 10 + (c - '0');
-         c++;
+            i = i * 10 + (c - '0');
+            c++;
+         }
       }
      
       return i;
    }
 
    bool PLYMesh::load(const std::string& filename) {
+      _positions.clear();
+      _faces.clear();
+      
       if (_positions.size() != 0) {
          std::cout << "WARNING: Cannot load different files with the same PLY mesh\n";
          return false;
@@ -66,7 +70,8 @@ namespace agl {
       // todo: your code here
       std::string fileText;
 
-      std::ifstream FileReader("../models/cube.ply");
+      std::cout << filename << std::endl;
+      std::ifstream FileReader("../models/" + filename);
 
       if (FileReader.is_open()) {
          getline(FileReader, fileText);
@@ -83,8 +88,7 @@ namespace agl {
          splitString(fileText); // Splits string by spaces
          // Gets only the number from the element vertex line
          string vAmount = words_vec[words_vec.size() - 1];
-         int vertexAmount = stoi(vAmount);
-         std::cout << stoNumber(vAmount) << "\n";
+         int vertexAmount = stoNumber(vAmount);
 
          getline(FileReader, fileText);
          splitString(fileText);
@@ -94,10 +98,9 @@ namespace agl {
             splitString(fileText);
          }
 
-         getline(FileReader, fileText); // Reads "element face [number]"
          splitString(fileText); // Splits string by spaces
          // Gets only the number from the element face line
-         int faceAmount = stoi(words_vec[words_vec.size() - 1]);
+         int faceAmount = stoNumber(words_vec[words_vec.size() - 1]);
 
          // Skips "property list uint8 int32 vertex_indices" line
          getline(FileReader, fileText);
