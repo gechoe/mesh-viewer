@@ -5,4 +5,3 @@ extern std::string PromptToLoad();
 extern std::string PromptToLoadDir();
 extern std::string PruneName(const std::string& name);
 extern std::string PruneDir(const std::string& name);
-

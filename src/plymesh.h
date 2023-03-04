@@ -1,6 +1,6 @@
 //--------------------------------------------------
-// Author:
-// Date:
+// Author: Grace Choe
+// Date: 2/28/2023
 // Description: Loads PLY files in ASCII format
 //--------------------------------------------------
 
@@ -11,6 +11,20 @@
 #include "agl/mesh/triangle_mesh.h"
 
 namespace agl {
+   // class vertexPos {
+   //    public:
+   //       float xLoc;
+   //       float yLoc;
+   //       float zLoc;
+   // };
+
+   // class facePos {
+   //    public:
+   //       int vert1;
+   //       int vert2;
+   //       int vert3;
+   // };
+
    class PLYMesh : public TriangleMesh
    {
    public:
@@ -19,6 +33,11 @@ namespace agl {
       PLYMesh();
 
       virtual ~PLYMesh();
+
+      // Method that helps with splitting a line by spaces.
+      void splitString(std::string strLine, std::string splitBySpaces);
+
+      long stoNumber(const std::string str); // Converts string to a number
 
       // Initialize this object with the given file
       // Returns true if successfull. false otherwise.
@@ -49,10 +68,13 @@ namespace agl {
       void init();
 
    protected:
+      std::vector<std::string> words_vec; // contains words from text file
+      // std::vector<vertexPos> vertices_vec; // contains vertices from text file
+      // std::vector<facePos> faces_vec; // contains faces from text file
 
-      std::vector<GLfloat> _positions;
-      std::vector<GLfloat> _normals;
-      std::vector<GLuint> _faces;
+      std::vector<GLfloat> _positions; // vertices
+      std::vector<GLfloat> _normals; // normals
+      std::vector<GLuint> _faces; // faces
    };
 }
 
