@@ -49,6 +49,12 @@ namespace agl {
       // Return the maximum point of the axis-aligned bounding box
       glm::vec3 maxBounds() const;
 
+      // Gets the vec3 for the renderer.translate() value
+      glm::vec3 PLYMesh::translateVal();
+
+      // Gets the vec3 for the renderer.scale() value
+      glm::vec3 PLYMesh::scaleVal();
+
       // Return number of vertices in this model
       int numVertices() const;
 
@@ -68,7 +74,7 @@ namespace agl {
       void init();
 
    protected:
-      std::vector<std::string> words_vec; // contains words from text file
+      std::vector<std::string> wordsVec; // contains words from text file
       // std::vector<vertexPos> vertices_vec; // contains vertices from text file
       // std::vector<facePos> faces_vec; // contains faces from text file
 

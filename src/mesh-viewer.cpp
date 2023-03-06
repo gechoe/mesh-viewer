@@ -21,13 +21,26 @@ public:
    }
 
    void setup() override {
-      filenames_vec = GetFilenamesInDir("../models", "ply");
+      filenamesVec = GetFilenamesInDir("../models", "ply");
       // curr_file = "cube.ply";//filenames_vec[0];
       // mesh.load("../models/cube.ply");
+      int num = 0;
 
-      for (string file : filenames_vec) {
-         std::cout << file << std::endl;
+      for (string file : filenamesVec) {
+         tempMesh = PLYMesh("../models/" + file);
+         meshesVec.push_back(tempMesh);
+         // std::cout << mesh.numVertices() << std::endl;
       }
+
+      // vector<float> nums;
+      // nums.push_back(14.145);
+      // nums.push_back(3.14159);
+
+      // std::cout << std::max(nums[0], nums[1]) << std::endl;
+
+      // for (string file : filenamesVec) {
+      //    std::cout << file << std::endl;
+      // }
    }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
@@ -42,44 +55,45 @@ public:
    void scroll(float dx, float dy) override {
    }
 
-   void keyUp(int key, int mods) override {
-   }
+   // void keyUp(int key, int mods) override {
+   // }
 
    // keyDown()
    // Changes brush size, brush transparency, and clears screen if certain keys
    // are pressed
-   void keyDown(int key, int mods) override {
-      if (key == GLFW_KEY_N) { // 'N' or 'n' key
-         curr_file_loc++;
-         if (curr_file_loc == filenames_vec.size()) {
-            curr_file_loc = 0;
+   void keyUp(int key, int mods) override {
+      if ((key == GLFW_KEY_N) || (key == GLFW_KEY_N && key == GLFW_MOD_SHIFT)) { // 'N' or 'n' key
+         currFileLoc++;
+         if (currFileLoc == filenamesVec.size()) {
+            currFileLoc = 0;
          }
 
-         curr_file = filenames_vec[curr_file_loc];
-      } else if (key == GLFW_KEY_P) {
-         curr_file_loc--;
-         if (curr_file_loc == -1) {
-            curr_file_loc = filenames_vec.size() - 1;
+         currFile = filenamesVec[currFileLoc];
+      } else if ((key == GLFW_KEY_P) || (key == GLFW_KEY_P && key == GLFW_MOD_SHIFT)) {
+         currFileLoc--;
+         if (currFileLoc == -1) {
+            currFileLoc = filenamesVec.size() - 1;
          }
 
-         curr_file = filenames_vec[curr_file_loc];
+         currFile = filenamesVec[currFileLoc];
       }
    }
 
-   void changeMesh() {
-      mesh.load(curr_file);
-      // std::cout << mesh.numVertices() << std::endl;
-      renderer.mesh(mesh);
-   }
+   // void changeMesh() {
+   //    mesh.load(currFile);
+   //    // std::cout << mesh.numVertices() << std::endl;
+   //    renderer.mesh(mesh);
+   // }
 
    void draw() override {
       float aspect = ((float)width()) / height();
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       renderer.lookAt(eyePos, lookPos, up);
-
+      // renderer.scale(vec3(1, 1, 1));
       renderer.translate(vec3(0, 0, 0));
       renderer.rotate(vec3(0, 0, 0));
-      renderer.scale(vec3(1, 1, 1));
+
+      renderer.scale(vec3(0.5, 0.5, 0.5));
       //renderer.mesh(mesh); // this line draws the mesh, affected by the given transforms
       // renderer.teapot(); // you can try built-in meshes for testing
 
@@ -91,10 +105,32 @@ public:
       // renderer.translate(vec3(0,0,0));
       // renderer.mesh(mesh);
       // std::cout << curr_file << std::endl;
-      changeMesh();
+      // changeMesh();
+      // mesh.load(currFile);
+      mesh = meshesVec[currFileLoc];
+
+      vec3 min = mesh.minBounds();
+      vec3 max = mesh.maxBounds();
+
+      // renderer.scale(vec3(1, 1, 1));
+      //    renderer.translate(vec3(0, 0, 0));
+      //    renderer.rotate(vec3(0, 0, 0));
+
+      // if ((max.x - min.x) > width() || (max.y - min.y) > height()) {
+      //    std::cout << width() << std::endl;
+      //    renderer.scale(vec3(0.1, 0.1, 0.1));
+      //    renderer.translate(vec3((max.x - min.x) / 2, (max.y - min.y) / 2, (max.z - min.z) / 2));
+      //    renderer.rotate(vec3(0, 0, 0));
+      // } else {
+      //    renderer.scale(vec3(1, 1, 1));
+      //    renderer.translate(vec3(0, 0, 0));
+      //    renderer.rotate(vec3(0, 0, 0));
+      // }
+
+      // std::cout << mesh.numVertices() << std::endl;
       // mesh.load(curr_file);
       // // std::cout << mesh.numVertices() << std::endl;
-      // renderer.mesh(mesh);
+      renderer.mesh(mesh);
       // renderer.cube(); // for debugging!
       
       // for (int i = 0; i < filenames_vec.size(); i++) {
@@ -105,12 +141,13 @@ public:
    }
 
    private:
-      std::vector<std::string> filenames_vec; // filenames of all meshes
-      int curr_file_loc = 0;
-      std::string curr_file = "cube.ply";
+      vector<string> filenamesVec; // filenames of all meshes
+      vector<PLYMesh> meshesVec;
+      int currFileLoc = 20;
+      string currFile = "cube.ply";
 
    protected:
-      PLYMesh mesh;
+      PLYMesh mesh, tempMesh;
       vec3 eyePos = vec3(10, 0, 0);
       vec3 lookPos = vec3(0, 0, 0);
       vec3 up = vec3(0, 1, 0);
@@ -122,4 +159,3 @@ int main(int argc, char** argv)
    viewer.run();
    return 0;
 }
-
