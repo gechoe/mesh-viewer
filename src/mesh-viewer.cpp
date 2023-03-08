@@ -90,10 +90,10 @@ public:
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       renderer.lookAt(eyePos, lookPos, up);
       // renderer.scale(vec3(1, 1, 1));
-      renderer.translate(vec3(0, 0, 0));
-      renderer.rotate(vec3(0, 0, 0));
-
-      renderer.scale(vec3(0.5, 0.5, 0.5));
+      // renderer.translate(vec3(0, 0, 0));
+      // renderer.rotate(vec3(0, 0, 0));
+      // renderer.scale(vec3(0.5, 0.5, 0.5));
+      
       //renderer.mesh(mesh); // this line draws the mesh, affected by the given transforms
       // renderer.teapot(); // you can try built-in meshes for testing
 
@@ -108,16 +108,26 @@ public:
       // changeMesh();
       // mesh.load(currFile);
       mesh = meshesVec[currFileLoc];
+      renderer.rotate(vec3(0, 0, 0));
+      std::cout << "hi" << currFile << std::endl;
+      // glm::vec3 transVal = translateVal(mesh);
+      // glm::vec3 maxB = mesh.maxBounds();
+      // glm::vec3 minB = mesh.minBounds();
 
-      vec3 min = mesh.minBounds();
-      vec3 max = mesh.maxBounds();
+      // glm::vec3 currCenter = {((maxB.x - minB.x) / 2) + minB.x, ((maxB.y - minB.y) / 2) + minB.y, ((maxB.z - minB.z) / 2) + minB.z};
+      // glm::vec3 tVal = {(currCenter.x * -1), (currCenter.y * -1), (currCenter.z * -1)};
+
+      renderer.scale(mesh.scaleVal());
+      renderer.translate(mesh.translateVal());
+      // vec3 min = mesh.minBounds();
+      // vec3 max = mesh.maxBounds();
 
       // renderer.scale(vec3(1, 1, 1));
       //    renderer.translate(vec3(0, 0, 0));
       //    renderer.rotate(vec3(0, 0, 0));
 
       // if ((max.x - min.x) > width() || (max.y - min.y) > height()) {
-      //    std::cout << width() << std::endl;
+         // std::cout << width() << "  " << height() << std::endl;
       //    renderer.scale(vec3(0.1, 0.1, 0.1));
       //    renderer.translate(vec3((max.x - min.x) / 2, (max.y - min.y) / 2, (max.z - min.z) / 2));
       //    renderer.rotate(vec3(0, 0, 0));

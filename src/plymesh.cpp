@@ -5,6 +5,7 @@
 //--------------------------------------------------
 
 #include "plymesh.h"
+#include "agl/window.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -146,80 +147,6 @@ namespace agl {
       }
 
       return false;
-      // if (_positions.size() != 0) {
-      //    std::cout << "WARNING: Cannot load different files with the same PLY mesh\n";
-      //    return false;
-      // }
-      // // todo: your code here
-      // std::string fileText;
-
-      // ifstream FileReader("cube.ply");
-
-      // getline(FileReader, fileText);
-      // getline(FileReader, fileText);
-
-      // std::cout << fileText << std::endl;
-
-      // if (fileText.compare("ply") != 0) {
-      //    std::cout << "WARNING: Ply file is incorrect." << std::endl;
-      //    return false;
-      // }
-
-      // getline(FileReader, fileText); // Skips "format ascii 1.0" line
-   
-      // getline(FileReader, fileText); // Reads "element vertex [number]"
-      // splitString(fileText); // Splits string by spaces
-      // // Gets only the number from the element vertex line
-      // int vertexAmount = stoi(words_vec[words_vec.size() - 1]);
-
-      // getline(FileReader, fileText); // Skips "property float32 x" line
-      // getline(FileReader, fileText); // Skips "property float32 y" line
-      // getline(FileReader, fileText); // Skips "property float32 z" line
-
-      // getline(FileReader, fileText); // Reads "element face [number]"
-      // splitString(fileText); // Splits string by spaces
-      // // Gets only the number from the element face line
-      // int faceAmount = stoi(words_vec[words_vec.size() - 1]);
-
-      // // Skips "property list uint8 int32 vertex_indices" line
-      // getline(FileReader, fileText);
-
-      // getline(FileReader, fileText); // Skips "end_header" line
-      // words_vec.clear();
-
-      // for (int i = 0; i < vertexAmount; i++) {
-      //    getline(FileReader, fileText); // Reads vertex information
-      //    splitString(fileText); // Splits string by spaces
-      //    // float x = 
-      //    _positions.push_back(stof(words_vec[0]));
-      //    // float y = 
-      //    _positions.push_back(stof(words_vec[1]));
-      //    // float z = 
-      //    _positions.push_back(stof(words_vec[2]));
-      //    // vertexPos vert = {x, y, z};
-
-      //    // vertices_vec.push_back(vert);
-      //    words_vec.clear();
-      // }
-
-      // for (int j = 0; j < faceAmount; j++) {
-      //    getline(FileReader, fileText); // Reads face information
-      //    splitString(fileText); // Splits string by spaces
-      //    // int vertOne = 
-      //    _faces.push_back(stoi(words_vec[1]));
-      //    // int vertTwo = 
-      //    _faces.push_back(stoi(words_vec[2]));
-      //    // int vertThree = 
-      //    _faces.push_back(stoi(words_vec[3]));
-      //    // facePos face = {vertOne, vertTwo, vertThree};
-
-      //    // faces_vec.push_back(face);
-      //    words_vec.clear();
-      // }
-
-      // FileReader.close();
-
-      // return false;
    }
 
    glm::vec3 PLYMesh::minBounds() const {
@@ -257,14 +184,44 @@ namespace agl {
    }
 
    glm::vec3 PLYMesh::translateVal() {
-      glm::vec3 tVal;
+      glm::vec3 maxB = maxBounds();
+      glm::vec3 minB = minBounds();
+      glm::vec3 currCenter;
+
+      currCenter.x = ((maxB.x - minB.x) / 2) + minB.x;
+      currCenter.y = ((maxB.y - minB.y) / 2) + minB.y;
+      currCenter.z = ((maxB.z - minB.z) / 2) + minB.z;
+
+      glm::vec3 tVal = {(currCenter.x * -1), (currCenter.y * -1), (currCenter.z * -1)};
       
       return tVal; // glm::vec3(0);
    }
 
    glm::vec3 PLYMesh::scaleVal() {
       glm::vec3 sVal;
+      float scaleValue;
 
+      glm::vec3 maxB = maxBounds();
+      glm::vec3 minB = minBounds();
+      glm::vec3 size;
+
+      size.x = maxB.x - minB.x;
+      size.y = maxB.y - minB.y;
+      size.z = maxB.z - minB.z;
+
+      if ((size.x > 10) || (size.y > 10) || (size.z > 10)) {
+         float largest = std::max(size.x, size.y);
+         largest = std::max(largest, size.z);
+
+         float smallest = std::min(size.x, size.y);
+         smallest = std::min(smallest, size.z);
+
+         scaleValue = 10 / (largest + (smallest / 2));
+      } else {
+         scaleValue = 1;
+      }
+
+      sVal = {scaleValue, scaleValue, scaleValue};
       return sVal; // glm::vec3(0);
    }
 

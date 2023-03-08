@@ -50,10 +50,10 @@ namespace agl {
       glm::vec3 maxBounds() const;
 
       // Gets the vec3 for the renderer.translate() value
-      glm::vec3 PLYMesh::translateVal();
+      glm::vec3 translateVal();
 
       // Gets the vec3 for the renderer.scale() value
-      glm::vec3 PLYMesh::scaleVal();
+      glm::vec3 scaleVal();
 
       // Return number of vertices in this model
       int numVertices() const;
