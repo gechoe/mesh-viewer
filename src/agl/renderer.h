@@ -110,7 +110,7 @@ class Renderer {
    * view * modelTransform
    */
   void ortho(float minx, float maxx,
-      float miny, float maxy, float minz, float maxz);
+      float miny, float maxy, float minz, float maxz); 
 
   /**
    * @brief Set the camera position and orientation
@@ -140,6 +140,18 @@ class Renderer {
    * @verbinclude confetti.cpp
    */
   glm::vec3 cameraPosition() const;
+
+  // Calculates camera's orbit movement
+  glm::vec3 camPos(float radius, float azimuth, float elevation);
+
+//   // Controls the camera's backward and forward direction, Z
+//   glm::vec3 backwardDir() const;
+
+//   // Controls the camera's up and down direction, Y
+//   glm::vec3 upDir() const;
+
+//   // Controls the camera's right and left direction, X
+//   glm::vec3 rightDir() const;
 
   /**
    * @brief Get the current projection matrix
@@ -656,6 +668,8 @@ class Renderer {
   glm::mat4 _projectionMatrix;
   glm::mat4 _viewMatrix;
   glm::vec3 _lookfrom;
+//   glm::vec3 _lookat; //
+//   glm::vec3 _up; //
 
   // default meshes
   class Cube* _cube;

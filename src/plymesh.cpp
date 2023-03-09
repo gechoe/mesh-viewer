@@ -20,6 +20,7 @@ namespace agl {
    }
 
    PLYMesh::PLYMesh() {
+      load("../models/cube.ply");
    }
 
    void PLYMesh::init() {

@@ -79,16 +79,14 @@ public:
       }
    }
 
-   // void changeMesh() {
-   //    mesh.load(currFile);
-   //    // std::cout << mesh.numVertices() << std::endl;
-   //    renderer.mesh(mesh);
-   // }
-
    void draw() override {
       float aspect = ((float)width()) / height();
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
+      
+      eyePos = renderer.camPos(10, 0, 20);
+      // eyePos = {10, 20, 0};
       renderer.lookAt(eyePos, lookPos, up);
+      
       // renderer.scale(vec3(1, 1, 1));
       // renderer.translate(vec3(0, 0, 0));
       // renderer.rotate(vec3(0, 0, 0));
@@ -119,6 +117,9 @@ public:
 
       renderer.scale(mesh.scaleVal());
       renderer.translate(mesh.translateVal());
+      // glm::vec3 camLoc = renderer.cameraPosition();
+      // std::cout << "(" << camLoc.x << ", " << camLoc.y << ", " << camLoc.z << ")" << std::endl;
+
       // vec3 min = mesh.minBounds();
       // vec3 max = mesh.maxBounds();
 
