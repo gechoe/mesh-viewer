@@ -98,9 +98,9 @@ vec3 Renderer::cameraPosition() const {
 }
 
 vec3 Renderer::camPos(float rad, float azi, float elev) {
-  _lookfrom.x = rad * cos(azi) * sin(elev);
-  _lookfrom.y = rad * cos(elev);
-  _lookfrom.z = rad * sin(azi) * sin(elev);
+  _lookfrom.x = rad * sin(azi) * cos(elev);
+  _lookfrom.y = rad * sin(elev);
+  _lookfrom.z = rad * cos(azi) * cos(elev);
 
   // _lookfrom.x = rad;
   // _lookfrom.y = azi;

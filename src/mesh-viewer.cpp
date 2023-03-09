@@ -83,7 +83,7 @@ public:
       float aspect = ((float)width()) / height();
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       
-      eyePos = renderer.camPos(10, 0, 20);
+      eyePos = renderer.camPos(10, 20, 0);
       // eyePos = {10, 20, 0};
       renderer.lookAt(eyePos, lookPos, up);
       
