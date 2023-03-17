@@ -97,48 +97,6 @@ vec3 Renderer::cameraPosition() const {
   return _lookfrom;
 }
 
-vec3 Renderer::camPos(float rad, float azi, float elev) {
-  _lookfrom.x = rad * sin(azi) * cos(elev);
-  _lookfrom.y = rad * sin(elev);
-  _lookfrom.z = rad * cos(azi) * cos(elev);
-
-  // _lookfrom.x = rad;
-  // _lookfrom.y = azi;
-  // _lookfrom.z = elev;
-
-  // float x = rad * cos(azi) * sin(elev);
-  // float y = rad * cos(elev);
-  // float z = rad * sin(azi) * sin(elev);
-
-  // vec3 eyePos = vec3(x, 0, 0);
-  // vec3 lookPos = vec3(0, 0, 0);
-  // vec3 up = vec3(0, y, 0);
-
-//   void Renderer::lookAt(const vec3& lookfrom,
-//     const vec3& lookat, const vec3& up) {
-//   _lookfrom = lookfrom;
-//   _viewMatrix = glm::lookAt(lookfrom, lookat, up);
-// }
-
-  // _viewMatrix = glm::lookAt(_lookfrom, _lookat, _up);
-  return _lookfrom;
-}
-
-// // Controls the camera's backward and forward direction, Z
-// vec3 Renderer::backwardDir() const {
-
-// }
-
-// // Controls the camera's up and down direction, Y
-// vec3 Renderer::upDir() const {
-
-// }
-
-// // Controls the camera's right and left direction, X
-// vec3 Renderer::rightDir() const {
-
-// }
-
 void Renderer::init() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);

@@ -46,21 +46,58 @@ public:
       // shadersVec.push_back("phong-pixel");
    }
 
-   // float mouseX() const {
-   //    double xpos, ypos;
-   //    glfwGetCursorPos(_window, &xpos, &ypos);
-   //    return static_cast<float>(xpos);
+   float mouseX() const {
+      double xpos, ypos;
+      glfwGetCursorPos(_window, &xpos, &ypos);
+      return static_cast<float>(xpos);
+   }
+
+   float mouseY() const {
+      double xpos, ypos;
+      glfwGetCursorPos(_window, &xpos, &ypos);
+      return static_cast<float>(height() - ypos);
+   }
+
+   // I added camPos()
+   vec3 camLocation(float rad, float azi, float elev) {
+      camPos.x = rad * cos(azi) * cos(elev);
+      camPos.y = rad * sin(elev);
+      camPos.z = rad * sin(azi) * cos(elev);
+
+      return camPos;
+   }
+
+   // Controls the camera's backward and forward direction, Z
+   // vec3 backwardDir() const {
+   //    vec2 mousePos = mousePosition();
+
+
+
    // }
 
-   // float mouseY() const {
-   //    double xpos, ypos;
-   //    glfwGetCursorPos(_window, &xpos, &ypos);
-   //    return static_cast<float>(height() - ypos);
-   // }
+   // Controls the camera's up and down direction, Y
+   void upDir(int x, int dx) {
+      mousePos = mousePosition();
+      float windHeight = height();
+
+      azimuth = (mousePos.x / windHeight) * 360;
+      std::cout << azimuth << std::endl;
+   }
+
+   // Controls the camera's right and left direction, X
+   void rightDir(int y, int dy) {
+      mousePos = mousePosition();
+      float windWidth = width();
+
+      elevation = ((mousePos.y / windWidth) * 180) - 90;
+
+   }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
-      if (mouseIsDown(GLFW_MOUSE_BUTTON_LEFT)) {
-         
+      if (mouseClicked) { //mouseIsDown(GLFW_MOUSE_BUTTON_LEFT)) {
+         upDir(x, dx);
+         rightDir(y, dy);
+         camLocation(radius, azimuth, elevation);
       }
    }
 
@@ -117,9 +154,14 @@ public:
       float aspect = ((float)width()) / height(); 
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       
-      eyePos = renderer.camPos(10, 20, 0);
+      // eyePos = renderer.camPos(10, 20, 0);
+      eyePos = camLocation(radius, azimuth, elevation);
       // eyePos = {10, 20, 0};
-      renderer.lookAt(eyePos, lookPos, up);
+      vec3 camZ = camPos - lookPos;
+      vec3 camX = cross(vec3(0, 1, 0), camZ);
+      vec3 camY = cross(camZ, camX);
+      // renderer.lookAt(eyePos, lookPos, up);
+      renderer.lookAt(eyePos, lookPos, camY);
       
       mesh = meshesVec[currFileLoc];
       renderer.rotate(vec3(0, 0, 0));
@@ -145,12 +187,17 @@ public:
       float alpha = 0.3; // alpha for specular var
       bool mouseClicked = false;
       vec3 scale;
+      vec2 mousePos;
 
    protected:
       PLYMesh mesh, tempMesh;
       vec3 eyePos = vec3(10, 0, 0);
       vec3 lookPos = vec3(0, 0, 0);
       vec3 up = vec3(0, 1, 0);
+      vec3 camPos = vec3(10, 0, 0);
+      float azimuth = 0;
+      float elevation = 0;
+      float radius = 10;
 };
 
 int main(int argc, char** argv)
