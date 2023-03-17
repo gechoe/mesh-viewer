@@ -32,8 +32,9 @@ void main()
    float alpha = 0.8;
    vec3 specular;
 
-   lightColor = vec3(0.1, 0.1, 0.1);
-   constColor = vec3(0.52, 0.62, 1);
+   lightColor = vec3(0.5, 0.5, 0.5);
+   // constColor = vec3(0.52, 0.62, 1);
+   constColor = vec3(0.4, 0.6, 1);
    ambient = vec3(constColor * lightColor);
 
    lightPos = vec4(15, 15, 15, 1);
@@ -41,14 +42,16 @@ void main()
    normLight = normalize(vec3(lightPos - eyePos));
    normal = normalize(vec3(NormalMatrix * vNormals));
    dotNormsNL = dot(normal, normLight);
-   matColor = vec3(0, 0, 1);
-   diffuse = vec3(constColor * dotNormsNL * lightColor * matColor);
+   matColor = vec3(0.2, 0.2, 1);
+   diffuse = vec3(max(dotNormsNL, 0) * lightColor); //vec3(constColor * dotNormsNL * lightColor * matColor);
 
    normVert = normalize(vec3(vec3(eyePos) - vPos));
    normReflect = 2 * dotNormsNL * normal - normLight;
    dotNormsRV = dot(normReflect, normVert);
    // specular = constColor * lightColor * pow(float(normReflect), alpha);
-   specular = (constColor * dotNormsNL) + (constColor * pow(float(normReflect), float(normal)));
+   int constant = 32; // size of highlight, the bigger the more concentrated the highlight is
+   specular = vec3(pow(max(dotNormsRV, 0), constant)); 
+   //(constColor * dotNormsNL) + (constColor * pow(normReflect, normal));
 
    phongReflec = ambient + diffuse + specular;
 

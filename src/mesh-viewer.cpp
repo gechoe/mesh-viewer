@@ -22,25 +22,12 @@ public:
 
    void setup() override {
       filenamesVec = GetFilenamesInDir("../models", "ply");
-      // curr_file = "cube.ply";//filenames_vec[0];
-      // mesh.load("../models/cube.ply");
       int num = 0;
 
       for (string file : filenamesVec) {
          tempMesh = PLYMesh("../models/" + file);
          meshesVec.push_back(tempMesh);
-         // std::cout << mesh.numVertices() << std::endl;
       }
-
-      // vector<float> nums;
-      // nums.push_back(14.145);
-      // nums.push_back(3.14159);
-
-      // std::cout << std::max(nums[0], nums[1]) << std::endl;
-
-      // for (string file : filenamesVec) {
-      //    std::cout << file << std::endl;
-      // }
 
       shadersVec.push_back("normals");
       shadersVec.push_back("phong-vertex");
@@ -48,7 +35,6 @@ public:
 
       for (string shader : shadersVec) {
          renderer.loadShader(shader, "../shaders/" + shader + ".vs", "../shaders/" + shader + ".fs");
-         // std::cout << mesh.numVertices() << std::endl;
       }
 
       // renderer.loadShader("normals", "../shaders/normals.vs", "../shaders/normals.fs");
@@ -88,7 +74,7 @@ public:
    void mouseUp(int button, int mods) override {
       // button is not clicked
       if (button == GLFW_MOUSE_BUTTON_LEFT) {
-
+         mouseClicked = false;
       }
    }
 
@@ -99,8 +85,7 @@ public:
    // }
 
    // keyDown()
-   // Changes brush size, brush transparency, and clears screen if certain keys
-   // are pressed
+   // Changes mesh or shader type
    void keyUp(int key, int mods) override {
       if ((key == GLFW_KEY_N) || (key == GLFW_KEY_N && key == GLFW_MOD_SHIFT)) { // 'N' or 'n' key
          currFileLoc++;
@@ -121,6 +106,8 @@ public:
          if (currShaderLoc == shadersVec.size()) {
             currShaderLoc = 0;
          }
+      } else if ((key == GLFW_MOD_SHIFT) && (mouseClicked == true)) {
+         scale = {scale.x + 10, scale.y + 10, scale.z + 10};
       }
    }
 
@@ -137,7 +124,9 @@ public:
       mesh = meshesVec[currFileLoc];
       renderer.rotate(vec3(0, 0, 0));
       
-      renderer.scale(mesh.scaleVal());
+      scale = mesh.scaleVal();
+
+      renderer.scale(scale);
       renderer.translate(mesh.translateVal());
       
       renderer.mesh(mesh);
@@ -155,6 +144,7 @@ public:
       struct GLFWwindow* _window = 0;
       float alpha = 0.3; // alpha for specular var
       bool mouseClicked = false;
+      vec3 scale;
 
    protected:
       PLYMesh mesh, tempMesh;
