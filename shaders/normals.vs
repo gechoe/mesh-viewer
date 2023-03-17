@@ -9,7 +9,12 @@ uniform mat4 ModelViewMatrix;
 uniform mat4 MVP;
 uniform bool HasUV;
 
-void main()
-{
+out vec3 vNormalPrime;
+
+void main() {
+   vNormalPrime.x = (vNormal.x + 1) / 2;
+   vNormalPrime.y = (vNormal.y + 1) / 2;
+   vNormalPrime.z = (vNormal.z + 1) / 2;
+
    gl_Position = MVP * vec4(vPos, 1.0);
 }
