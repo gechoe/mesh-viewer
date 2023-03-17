@@ -41,15 +41,55 @@ public:
       // for (string file : filenamesVec) {
       //    std::cout << file << std::endl;
       // }
+
+      shadersVec.push_back("normals");
+      shadersVec.push_back("phong-vertex");
+      shadersVec.push_back("phong-pixel");
+
+      for (string shader : shadersVec) {
+         renderer.loadShader(shader, "../shaders/" + shader + ".vs", "../shaders/" + shader + ".fs");
+         // std::cout << mesh.numVertices() << std::endl;
+      }
+
+      // renderer.loadShader("normals", "../shaders/normals.vs", "../shaders/normals.fs");
+      // renderer.loadShader("phong-vertex", "../shaders/phong-vertex.vs", "../shaders/phong-vertex.fs");
+      // renderer.loadShader("phong-pixel", "../shaders/phong-pixel.vs", "../shaders/phong-pixel.fs");
+
+      // shadersVec.push_back("normals");
+      // shadersVec.push_back("phong-vertex");
+      // shadersVec.push_back("phong-pixel");
    }
 
+   // float mouseX() const {
+   //    double xpos, ypos;
+   //    glfwGetCursorPos(_window, &xpos, &ypos);
+   //    return static_cast<float>(xpos);
+   // }
+
+   // float mouseY() const {
+   //    double xpos, ypos;
+   //    glfwGetCursorPos(_window, &xpos, &ypos);
+   //    return static_cast<float>(height() - ypos);
+   // }
+
    void mouseMotion(int x, int y, int dx, int dy) override {
+      if (mouseIsDown(GLFW_MOUSE_BUTTON_LEFT)) {
+         
+      }
    }
 
    void mouseDown(int button, int mods) override {
+      // button is clicked
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+         mouseClicked = true;
+      }
    }
 
    void mouseUp(int button, int mods) override {
+      // button is not clicked
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+
+      }
    }
 
    void scroll(float dx, float dy) override {
@@ -76,86 +116,45 @@ public:
          }
 
          currFile = filenamesVec[currFileLoc];
+      } else if ((key == GLFW_KEY_S) || (key == GLFW_KEY_S && key == GLFW_MOD_SHIFT)) {
+         currShaderLoc++;
+         if (currShaderLoc == shadersVec.size()) {
+            currShaderLoc = 0;
+         }
       }
    }
 
    void draw() override {
-      float aspect = ((float)width()) / height();
+      renderer.beginShader(shadersVec[currShaderLoc]); // activates shader with given name
+   
+      float aspect = ((float)width()) / height(); 
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       
       eyePos = renderer.camPos(10, 20, 0);
       // eyePos = {10, 20, 0};
       renderer.lookAt(eyePos, lookPos, up);
       
-      // renderer.scale(vec3(1, 1, 1));
-      // renderer.translate(vec3(0, 0, 0));
-      // renderer.rotate(vec3(0, 0, 0));
-      // renderer.scale(vec3(0.5, 0.5, 0.5));
-      
-      //renderer.mesh(mesh); // this line draws the mesh, affected by the given transforms
-      // renderer.teapot(); // you can try built-in meshes for testing
-
-      // float aspect = ((float)width()) / height();
-      // renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
-
-      // renderer.rotate(vec3(0,0,0));
-      // renderer.scale(vec3(1,1,1));
-      // renderer.translate(vec3(0,0,0));
-      // renderer.mesh(mesh);
-      // std::cout << curr_file << std::endl;
-      // changeMesh();
-      // mesh.load(currFile);
       mesh = meshesVec[currFileLoc];
       renderer.rotate(vec3(0, 0, 0));
-      std::cout << "hi" << currFile << std::endl;
-      // glm::vec3 transVal = translateVal(mesh);
-      // glm::vec3 maxB = mesh.maxBounds();
-      // glm::vec3 minB = mesh.minBounds();
-
-      // glm::vec3 currCenter = {((maxB.x - minB.x) / 2) + minB.x, ((maxB.y - minB.y) / 2) + minB.y, ((maxB.z - minB.z) / 2) + minB.z};
-      // glm::vec3 tVal = {(currCenter.x * -1), (currCenter.y * -1), (currCenter.z * -1)};
-
+      
       renderer.scale(mesh.scaleVal());
       renderer.translate(mesh.translateVal());
-      // glm::vec3 camLoc = renderer.cameraPosition();
-      // std::cout << "(" << camLoc.x << ", " << camLoc.y << ", " << camLoc.z << ")" << std::endl;
-
-      // vec3 min = mesh.minBounds();
-      // vec3 max = mesh.maxBounds();
-
-      // renderer.scale(vec3(1, 1, 1));
-      //    renderer.translate(vec3(0, 0, 0));
-      //    renderer.rotate(vec3(0, 0, 0));
-
-      // if ((max.x - min.x) > width() || (max.y - min.y) > height()) {
-         // std::cout << width() << "  " << height() << std::endl;
-      //    renderer.scale(vec3(0.1, 0.1, 0.1));
-      //    renderer.translate(vec3((max.x - min.x) / 2, (max.y - min.y) / 2, (max.z - min.z) / 2));
-      //    renderer.rotate(vec3(0, 0, 0));
-      // } else {
-      //    renderer.scale(vec3(1, 1, 1));
-      //    renderer.translate(vec3(0, 0, 0));
-      //    renderer.rotate(vec3(0, 0, 0));
-      // }
-
-      // std::cout << mesh.numVertices() << std::endl;
-      // mesh.load(curr_file);
-      // // std::cout << mesh.numVertices() << std::endl;
-      renderer.mesh(mesh);
-      // renderer.cube(); // for debugging!
       
-      // for (int i = 0; i < filenames_vec.size(); i++) {
-      //    if (filenames_vec[i].compare(curr_file) == 0) {
-      //       curr_file_loc = i;
-      //    }
-      // }
+      renderer.mesh(mesh);
+      
+      renderer.endShader();
    }
 
    private:
-      vector<string> filenamesVec; // filenames of all meshes
-      vector<PLYMesh> meshesVec;
+      vector<string> filenamesVec; // all filenames of meshes
+      vector<PLYMesh> meshesVec; // all meshes
+      vector<string> shadersVec; // all shaders
       int currFileLoc = 20;
+      int currShaderLoc = 0;
       string currFile = "cube.ply";
+      struct GLFWwindow* _window = 0;
+      float alpha = 0.3; // alpha for specular var
+      bool mouseClicked = false;
 
    protected:
       PLYMesh mesh, tempMesh;
