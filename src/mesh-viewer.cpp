@@ -1,6 +1,6 @@
 //--------------------------------------------------
 // Author: Grace Choe
-// Date:
+// Date: 3/1/2023
 // Description: Loads PLY files in ASCII format
 //--------------------------------------------------
 
@@ -32,72 +32,79 @@ public:
       shadersVec.push_back("normals");
       shadersVec.push_back("phong-vertex");
       shadersVec.push_back("phong-pixel");
+      shadersVec.push_back("toon");
+      shadersVec.push_back("jellofy");
+      shadersVec.push_back("wiggle");
 
       for (string shader : shadersVec) {
          renderer.loadShader(shader, "../shaders/" + shader + ".vs", "../shaders/" + shader + ".fs");
       }
-
-      // renderer.loadShader("normals", "../shaders/normals.vs", "../shaders/normals.fs");
-      // renderer.loadShader("phong-vertex", "../shaders/phong-vertex.vs", "../shaders/phong-vertex.fs");
-      // renderer.loadShader("phong-pixel", "../shaders/phong-pixel.vs", "../shaders/phong-pixel.fs");
-
-      // shadersVec.push_back("normals");
-      // shadersVec.push_back("phong-vertex");
-      // shadersVec.push_back("phong-pixel");
    }
 
-   float mouseX() const {
-      double xpos, ypos;
-      glfwGetCursorPos(_window, &xpos, &ypos);
-      return static_cast<float>(xpos);
-   }
+   // float mouseX() const {
+   //    double xpos, ypos;
+   //    glfwGetCursorPos(_window, &xpos, &ypos);
+   //    return static_cast<float>(xpos);
+   // }
 
-   float mouseY() const {
-      double xpos, ypos;
-      glfwGetCursorPos(_window, &xpos, &ypos);
-      return static_cast<float>(height() - ypos);
-   }
+   // float mouseY() const {
+   //    double xpos, ypos;
+   //    glfwGetCursorPos(_window, &xpos, &ypos);
+   //    return static_cast<float>(height() - ypos);
+   // }
 
    // I added camPos()
-   vec3 camLocation(float rad, float azi, float elev) {
-      camPos.x = rad * cos(azi) * cos(elev);
-      camPos.y = rad * sin(elev);
-      camPos.z = rad * sin(azi) * cos(elev);
+   vec3 camPos(float rad, float azi, float elev) {
+      vec3 camPOV;
+      camPOV.x = rad * cos(azi) * cos(elev);
+      camPOV.y = rad * sin(elev);
+      camPOV.z = rad * sin(azi) * cos(elev);
 
-      return camPos;
+      return camPOV;
    }
 
    // Controls the camera's backward and forward direction, Z
    // vec3 backwardDir() const {
    //    vec2 mousePos = mousePosition();
 
-
-
    // }
 
    // Controls the camera's up and down direction, Y
    void upDir(int x, int dx) {
-      mousePos = mousePosition();
+      // mousePos.x = mousePosition();
       float windHeight = height();
 
-      azimuth = (mousePos.x / windHeight) * 360;
+      azimuth += dx / 4; //(mousePos.x / windHeight) * 4.8; //(mousePos.x / windHeight) * 360;
       std::cout << azimuth << std::endl;
    }
 
    // Controls the camera's right and left direction, X
    void rightDir(int y, int dy) {
-      mousePos = mousePosition();
+      // mousePos.y = mousePosition();
       float windWidth = width();
 
-      elevation = ((mousePos.y / windWidth) * 180) - 90;
-
+      elevation += (-1 * dy) / 4;//((mousePos.y / windWidth) * 4) - 90;
    }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
       if (mouseClicked) { //mouseIsDown(GLFW_MOUSE_BUTTON_LEFT)) {
          upDir(x, dx);
          rightDir(y, dy);
-         camLocation(radius, azimuth, elevation);
+
+         if (azimuth > 360) {
+            azimuth = fmod(azimuth, 360);
+         } else if (azimuth < 0) {
+            azimuth = 360 - fmod(azimuth, 360);
+         }
+
+         if (elevation > 90) {
+            elevation = -90 + fmod(elevation, 90);
+         } else if (elevation < -90) {
+            elevation = 90 + fmod(elevation, -90);
+         }
+
+
+         // eyePos = camLocation(radius, azimuth, elevation);
       }
    }
 
@@ -116,10 +123,8 @@ public:
    }
 
    void scroll(float dx, float dy) override {
-   }
 
-   // void keyUp(int key, int mods) override {
-   // }
+   }
 
    // keyDown()
    // Changes mesh or shader type
@@ -143,6 +148,15 @@ public:
          if (currShaderLoc == shadersVec.size()) {
             currShaderLoc = 0;
          }
+
+         if (shadersVec[currShaderLoc] == "jellofy") {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+            glDisable(GL_CULL_FACE);
+         } else {
+            glDisable(GL_BLEND);
+            glEnable(GL_CULL_FACE);
+         }
       } else if ((key == GLFW_MOD_SHIFT) && (mouseClicked == true)) {
          scale = {scale.x + 10, scale.y + 10, scale.z + 10};
       }
@@ -155,9 +169,11 @@ public:
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       
       // eyePos = renderer.camPos(10, 20, 0);
-      eyePos = camLocation(radius, azimuth, elevation);
+      cameraPos = camPos(radius, azimuth, elevation);
+      eyePos = cameraPos;
       // eyePos = {10, 20, 0};
-      vec3 camZ = camPos - lookPos;
+      vec3 d = lookPos - cameraPos;
+      vec3 camZ = d - cameraPos - lookPos;
       vec3 camX = cross(vec3(0, 1, 0), camZ);
       vec3 camY = cross(camZ, camX);
       // renderer.lookAt(eyePos, lookPos, up);
@@ -172,7 +188,6 @@ public:
       renderer.translate(mesh.translateVal());
       
       renderer.mesh(mesh);
-      
       renderer.endShader();
    }
 
@@ -183,18 +198,15 @@ public:
       int currFileLoc = 20;
       int currShaderLoc = 0;
       string currFile = "cube.ply";
-      struct GLFWwindow* _window = 0;
-      float alpha = 0.3; // alpha for specular var
       bool mouseClicked = false;
       vec3 scale;
-      vec2 mousePos;
 
    protected:
       PLYMesh mesh, tempMesh;
       vec3 eyePos = vec3(10, 0, 0);
       vec3 lookPos = vec3(0, 0, 0);
       vec3 up = vec3(0, 1, 0);
-      vec3 camPos = vec3(10, 0, 0);
+      vec3 cameraPos = vec3(10, 0, 0);
       float azimuth = 0;
       float elevation = 0;
       float radius = 10;

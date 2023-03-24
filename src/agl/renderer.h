@@ -141,18 +141,6 @@ class Renderer {
    */
   glm::vec3 cameraPosition() const;
 
-  // Calculates camera's orbit movement
-  glm::vec3 camPos(float radius, float azimuth, float elevation);
-
-//   // Controls the camera's backward and forward direction, Z
-//   glm::vec3 backwardDir() const;
-
-//   // Controls the camera's up and down direction, Y
-//   glm::vec3 upDir() const;
-
-//   // Controls the camera's right and left direction, X
-//   glm::vec3 rightDir() const;
-
   /**
    * @brief Get the current projection matrix
    *

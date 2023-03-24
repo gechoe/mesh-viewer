@@ -161,10 +161,9 @@ namespace agl {
          minVert.x = std::min(minVert.x, _positions[i]);
          minVert.y = std::min(minVert.y, _positions[i + 1]);
          minVert.z = std::min(minVert.z, _positions[i + 2]);
-         // std::cout << i1 << ",\t " << i2 << ",\t " << i3 << std::endl;
       }
 
-      return minVert; // glm::vec3(0);
+      return minVert;
    }
 
    glm::vec3 PLYMesh::maxBounds() const {
@@ -178,10 +177,9 @@ namespace agl {
          maxVert.x = std::max(maxVert.x, _positions[i]);
          maxVert.y = std::max(maxVert.y, _positions[i + 1]);
          maxVert.z = std::max(maxVert.z, _positions[i + 2]);
-         // std::cout << i1 << ",\t " << i2 << ",\t " << i3 << std::endl;
       }
 
-      return maxVert; // glm::vec3(0);
+      return maxVert;
    }
 
    glm::vec3 PLYMesh::translateVal() {
@@ -195,7 +193,7 @@ namespace agl {
 
       glm::vec3 tVal = {(currCenter.x * -1), (currCenter.y * -1), (currCenter.z * -1)};
       
-      return tVal; // glm::vec3(0);
+      return tVal;
    }
 
    glm::vec3 PLYMesh::scaleVal() {
@@ -218,12 +216,20 @@ namespace agl {
          smallest = std::min(smallest, size.z);
 
          scaleValue = 10 / (largest + (smallest / 2));
+      } else if ((size.x < 5) || (size.y < 5) || (size.z < 5)) {
+         float largest = std::max(size.x, size.y);
+         largest = std::max(largest, size.z);
+
+         float smallest = std::min(size.x, size.y);
+         smallest = std::min(smallest, size.z);
+
+         scaleValue = 10 / ((smallest * 2) + largest);
       } else {
          scaleValue = 1;
       }
 
       sVal = {scaleValue, scaleValue, scaleValue};
-      return sVal; // glm::vec3(0);
+      return sVal;
    }
 
    int PLYMesh::numVertices() const {

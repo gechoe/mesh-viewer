@@ -229,8 +229,6 @@ void Renderer::ortho(float minx, float maxx,
 void Renderer::lookAt(const vec3& lookfrom,
     const vec3& lookat, const vec3& up) {
   _lookfrom = lookfrom;
-  // _lookat = lookat; //
-  // _up = up; //
   _viewMatrix = glm::lookAt(lookfrom, lookat, up);
 }
 

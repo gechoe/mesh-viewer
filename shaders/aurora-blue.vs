@@ -21,14 +21,14 @@ void main()
    vec4 eyePos; // eye position
    vec3 normLight; // normalized light, direction of light
    vec3 normal;
-   float dotNormsLN; // dot product of the light normal and normal
+   float dotNormsNL; // dot product of the light normal and normal
    vec3 matColor; // material color
    vec3 diffuse;
 
    vec3 normVert; // normalized Vertex
    vec3 currP; // currecnt vertex
    vec3 normReflect; // normalized reflection
-   float dotNormsVR; // dot product of the vertex normal and the reflection normal
+   float dotNormsRV; // dot product of the vertex normal and the reflection normal
    float alpha = 0.8;
    vec3 specular;
 
@@ -41,17 +41,17 @@ void main()
    eyePos = ModelViewMatrix * vec4(vPos, 1.0);
    normLight = normalize(vec3(lightPos - eyePos));
    normal = normalize(vec3(NormalMatrix * vNormals));
-   dotNormsLN = dot(normLight, normal);
+   dotNormsNL = dot(normal, normLight);
    matColor = vec3(0.2, 0.2, 1);
-   diffuse = vec3(max(dotNormsLN, 0) * lightColor); //vec3(constColor * dotNormsLN * lightColor * matColor);
+   diffuse = vec3((max(dotNormsNL, 0) * lightColor) * (normLight * normal)); //vec3(constColor * dotNormsNL * lightColor * matColor);
 
    normVert = normalize(vec3(vec3(eyePos) - vPos));
-   normReflect = 2 * dotNormsLN * normal - normLight;
-   dotNormsVR = dot(normVert, normReflect);
+   normReflect = 2 * dotNormsNL * normal - normLight;
+   dotNormsRV = dot(normReflect, normVert);
    // specular = constColor * lightColor * pow(float(normReflect), alpha);
    int constant = 32; // size of highlight, the bigger the more concentrated the highlight is
-   specular = vec3(pow(max(dotNormsVR, 0), constant)); 
-   //(constColor * dotNormsLN) + (constColor * pow(normReflect, normal));
+   specular = vec3(pow(max(dotNormsRV, 0), constant)); 
+   //(constColor * dotNormsNL) + (constColor * pow(normReflect, normal));
 
    phongReflec = ambient + diffuse + specular;
 
