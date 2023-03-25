@@ -1,19 +1,21 @@
 #version 400
 
-layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
+layout (location = 0) in vec3 vPos;
+layout (location = 1) in vec3 vNormal;
 
-out vec2 TexCoords;
-out vec4 ParticleColor;
+uniform mat4 MVP;
+uniform float uTime;
+uniform int numTriangles;
 
-uniform mat4 projection;
-uniform vec2 offset;
-//uniform vec4 color;
+out vec3 vNormalPrime;
 
-void main()
-{
-    //vec4 color = (1, 0, 0, 1);
-    float scale = 10.0f;
-    TexCoords = vertex.zw;
-    ParticleColor = vec4(1, 0, 0, 1);
-    gl_Position = projection * vec4((vertex.xy * scale) + offset, 0.0, 1.0);
+void main() {
+    vNormalPrime.x = sin((vNormal.x + 1));
+    vNormalPrime.y = sin((vNormal.y + 1) / 2);
+    vNormalPrime.z = sin((vNormal.z + 1));
+
+    float wiggleHeight = sin(numTriangles * 0.001);
+
+    vec3 pos = vPos + wiggleHeight * abs(cos(100000 * uTime + vPos.x * 100.0));
+    gl_Position = MVP * vec4(pos, 1.0);
 }

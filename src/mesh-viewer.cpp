@@ -21,11 +21,10 @@ public:
    }
 
    void setup() override {
-      filenamesVec = GetFilenamesInDir("../models", "ply");
-      int num = 0;
+      meshFNVec = GetFilenamesInDir("../models", "ply");
 
-      for (string file : filenamesVec) {
-         tempMesh = PLYMesh("../models/" + file);
+      for (string meshFile : meshFNVec) {
+         tempMesh = PLYMesh("../models/" + meshFile);
          meshesVec.push_back(tempMesh);
       }
 
@@ -34,24 +33,27 @@ public:
       shadersVec.push_back("phong-pixel");
       shadersVec.push_back("toon");
       shadersVec.push_back("jellofy");
+      shadersVec.push_back("glass");
+      shadersVec.push_back("vroom");
       shadersVec.push_back("wiggle");
+      shadersVec.push_back("color-change");
 
       for (string shader : shadersVec) {
          renderer.loadShader(shader, "../shaders/" + shader + ".vs", "../shaders/" + shader + ".fs");
       }
+
+      texturesVec.push_back("angelBear");
+      texturesVec.push_back("diff-widths-color");
+      texturesVec.push_back("fill-shapes-colorful");
+      texturesVec.push_back("squishy-tv-colors");
+      texturesVec.push_back("squishy");
+      texturesVec.push_back("triangle-randomized");
+
+      for (string texture : texturesVec) {
+         renderer.loadTexture(texture, "../textures/" + texture + ".png", slot);
+         slot++;
+      }
    }
-
-   // float mouseX() const {
-   //    double xpos, ypos;
-   //    glfwGetCursorPos(_window, &xpos, &ypos);
-   //    return static_cast<float>(xpos);
-   // }
-
-   // float mouseY() const {
-   //    double xpos, ypos;
-   //    glfwGetCursorPos(_window, &xpos, &ypos);
-   //    return static_cast<float>(height() - ypos);
-   // }
 
    // I added camPos()
    vec3 camPos(float rad, float azi, float elev) {
@@ -71,19 +73,17 @@ public:
 
    // Controls the camera's up and down direction, Y
    void upDir(int x, int dx) {
-      // mousePos.x = mousePosition();
       float windHeight = height();
 
-      azimuth += dx / 4; //(mousePos.x / windHeight) * 4.8; //(mousePos.x / windHeight) * 360;
+      azimuth += dx / 4;
       std::cout << azimuth << std::endl;
    }
 
    // Controls the camera's right and left direction, X
    void rightDir(int y, int dy) {
-      // mousePos.y = mousePosition();
       float windWidth = width();
 
-      elevation += (-1 * dy) / 4;//((mousePos.y / windWidth) * 4) - 90;
+      elevation += (-1 * dy) / 4;
    }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
@@ -102,7 +102,6 @@ public:
          } else if (elevation < -90) {
             elevation = 90 + fmod(elevation, -90);
          }
-
 
          // eyePos = camLocation(radius, azimuth, elevation);
       }
@@ -123,33 +122,33 @@ public:
    }
 
    void scroll(float dx, float dy) override {
-
+      // Not implemented bc I do not have access to a scrolling mechanic to test
    }
 
-   // keyDown()
-   // Changes mesh or shader type
+   // keyUp()
+   // Changes mesh or shader type or camera view
    void keyUp(int key, int mods) override {
       if ((key == GLFW_KEY_N) || (key == GLFW_KEY_N && key == GLFW_MOD_SHIFT)) { // 'N' or 'n' key
-         currFileLoc++;
-         if (currFileLoc == filenamesVec.size()) {
-            currFileLoc = 0;
+         currMeshLoc++;
+         if (currMeshLoc == meshFNVec.size()) {
+            currMeshLoc = 0;
          }
 
-         currFile = filenamesVec[currFileLoc];
+         currMesh = meshFNVec[currMeshLoc];
       } else if ((key == GLFW_KEY_P) || (key == GLFW_KEY_P && key == GLFW_MOD_SHIFT)) {
-         currFileLoc--;
-         if (currFileLoc == -1) {
-            currFileLoc = filenamesVec.size() - 1;
+         currMeshLoc--;
+         if (currMeshLoc == -1) {
+            currMeshLoc = meshFNVec.size() - 1;
          }
 
-         currFile = filenamesVec[currFileLoc];
+         currMesh = meshFNVec[currMeshLoc];
       } else if ((key == GLFW_KEY_S) || (key == GLFW_KEY_S && key == GLFW_MOD_SHIFT)) {
          currShaderLoc++;
          if (currShaderLoc == shadersVec.size()) {
             currShaderLoc = 0;
          }
 
-         if (shadersVec[currShaderLoc] == "jellofy") {
+         if ((shadersVec[currShaderLoc] == "jellofy") || (shadersVec[currShaderLoc] == "glass")) {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
             glDisable(GL_CULL_FACE);
@@ -157,14 +156,31 @@ public:
             glDisable(GL_BLEND);
             glEnable(GL_CULL_FACE);
          }
-      } else if ((key == GLFW_MOD_SHIFT) && (mouseClicked == true)) {
-         scale = {scale.x + 10, scale.y + 10, scale.z + 10};
+      } else if ((key == GLFW_KEY_T) || (key == GLFW_KEY_T && key == GLFW_MOD_SHIFT)) {
+         currTextureLoc++;
+         texturize = false;
+
+         if (currTextureLoc == texturesVec.size()) {
+            currTextureLoc = 0;
+            texturize = false;
+         }
+      } else if ((key == GLFW_KEY_Z) && (key == GLFW_KEY_UP)) { // Zooms in
+         //GLFW_MOD_SHIFT) && (mouseClicked == true)) {
+         scaleFactor = scaleFactor + 0.05f;
+      } else if ((key == GLFW_KEY_Z) && (key == GLFW_KEY_DOWN)) { // Zooms out
+         scaleFactor = scaleFactor - 0.05f;
+
+         if (scaleFactor < 0.1f) {
+            scaleFactor = 0.05f;
+         }
       }
    }
 
    void draw() override {
       renderer.beginShader(shadersVec[currShaderLoc]); // activates shader with given name
    
+      renderer.setUniform("uTime", elapsedTime());
+
       float aspect = ((float)width()) / height(); 
       renderer.perspective(glm::radians(60.0f), aspect, 0.1f, 50.0f);
       
@@ -179,12 +195,13 @@ public:
       // renderer.lookAt(eyePos, lookPos, up);
       renderer.lookAt(eyePos, lookPos, camY);
       
-      mesh = meshesVec[currFileLoc];
+      mesh = meshesVec[currMeshLoc];
+      renderer.setUniform("numTriangles", mesh.numTriangles());
       renderer.rotate(vec3(0, 0, 0));
       
       scale = mesh.scaleVal();
 
-      renderer.scale(scale);
+      renderer.scale(scale * scaleFactor);
       renderer.translate(mesh.translateVal());
       
       renderer.mesh(mesh);
@@ -192,14 +209,20 @@ public:
    }
 
    private:
-      vector<string> filenamesVec; // all filenames of meshes
+      vector<string> meshFNVec; // all filenames of meshes
       vector<PLYMesh> meshesVec; // all meshes
       vector<string> shadersVec; // all shaders
-      int currFileLoc = 20;
+      //vector<string> textFNVec; // all filenames of textures
+      vector<string> texturesVec; // all textures
+      int currMeshLoc = 20;
       int currShaderLoc = 0;
-      string currFile = "cube.ply";
+      int currTextureLoc = 0;
+      int slot = 1;
+      string currMesh = "cube.ply";
       bool mouseClicked = false;
       vec3 scale;
+      float scaleFactor = 1;
+      bool texturize = false;
 
    protected:
       PLYMesh mesh, tempMesh;
