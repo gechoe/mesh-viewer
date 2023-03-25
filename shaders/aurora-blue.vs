@@ -43,7 +43,8 @@ void main()
    normal = normalize(vec3(NormalMatrix * vNormals));
    dotNormsNL = dot(normal, normLight);
    matColor = vec3(0.2, 0.2, 1);
-   diffuse = vec3((max(dotNormsNL, 0) * lightColor) * (normLight * normal)); //vec3(constColor * dotNormsNL * lightColor * matColor);
+   diffuse = vec3((max(dotNormsNL, 0) * lightColor) * (normLight * normal));
+   //vec3(constColor * dotNormsNL * lightColor * matColor);
 
    normVert = normalize(vec3(vec3(eyePos) - vPos));
    normReflect = 2 * dotNormsNL * normal - normLight;
