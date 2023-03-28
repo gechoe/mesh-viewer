@@ -75,15 +75,14 @@ public:
    void upDir(int x, int dx) {
       float windHeight = height();
 
-      azimuth += dx / 4;
-      std::cout << azimuth << std::endl;
+      azimuth += dx / 5;
    }
 
    // Controls the camera's right and left direction, X
    void rightDir(int y, int dy) {
       float windWidth = width();
 
-      elevation += (-1 * dy) / 4;
+      elevation += dy / 5;
    }
 
    void mouseMotion(int x, int y, int dx, int dy) override {
@@ -164,10 +163,9 @@ public:
             currTextureLoc = 0;
             texturize = false;
          }
-      } else if ((key == GLFW_KEY_Z) && (key == GLFW_KEY_UP)) { // Zooms in
-         //GLFW_MOD_SHIFT) && (mouseClicked == true)) {
+      } else if (key == GLFW_KEY_Z) { // Zooms in
          scaleFactor = scaleFactor + 0.05f;
-      } else if ((key == GLFW_KEY_Z) && (key == GLFW_KEY_DOWN)) { // Zooms out
+      } else if (key == GLFW_KEY_X) { // Zooms out
          scaleFactor = scaleFactor - 0.05f;
 
          if (scaleFactor < 0.1f) {

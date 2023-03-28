@@ -48,19 +48,28 @@ TODO: Document the core features of your viewer (shaders + models)
 
 Features:
 1. next model - n or N goes to the next model:
+![Video_1](videos/nextModel.mov)
 
 2. previous model - p or P goes to the previous model:
+![Video_2](videos/previousModel.mov)
 
 3. go through shaders - s or S cycles through different shaders:
-
     normals
     per-vertex phong
     per-pixel phong
+    toon
+    jellofy
+    glass
+    vroom
+    wiggle
+    color-change
+![Video_3](videos/allShaders.mov)
 
 4. camera movement - Left-click-drag orbits the camera around the model:
+![Video_4](videos/camMove.mov)
 
-5. z↑ or z↓ - zooms in and out of the model
-
+5. z or x - zooms in and out of the model
+![Video_5](videos/zoom.mov)
 
 ## Unique features 
 
@@ -68,13 +77,16 @@ TODO: Show the unique features you made
 
 Unique Features:
 1. Toon shader - A cartoon shader:
+![Image_1](videos/toon.png)
 
 2. Jellofy shader - A transparent green shader:
+![Image_2](videos/jello.png)
 
 3. Glass shader - A clear shader:
+![Image_3](videos/glass.png)
 
 4. Vroom shader - Vertices animated to move mesh forwards:
+![Video_6](videos/vroom.mov)
 
-5. Wiggle shader - Vibrates the mesh:
-
-6. Color change shader - Gradients/Changes the color of the object:
+5. Color change shader - Gradients/Changes the color of the object:
+![Video_7](videos/colorChange.mov)
