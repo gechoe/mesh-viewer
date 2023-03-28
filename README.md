@@ -48,7 +48,7 @@ TODO: Document the core features of your viewer (shaders + models)
 
 Features:
 1. next model - n or N goes to the next model:
-![Video_1](videos/nextModel.mov)
+https://user-images.githubusercontent.com/98035309/228308413-e56ba036-ab8a-49a2-87ba-9feb50231dd8.mov
 
 2. previous model - p or P goes to the previous model:
 ![Video_2](videos/previousModel.mov)
