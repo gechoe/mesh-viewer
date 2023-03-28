@@ -48,10 +48,10 @@ TODO: Document the core features of your viewer (shaders + models)
 
 Features:
 1. next model - n or N goes to the next model:
-![Watch the video](https://user-images.githubusercontent.com/98035309/228309226-be780d20-aa25-4262-bf36-4a2ed069d759.mov)
+![Video_1](https://user-images.githubusercontent.com/98035309/228309226-be780d20-aa25-4262-bf36-4a2ed069d759.mov)
 
 2. previous model - p or P goes to the previous model:
-![Video_2](videos/previousModel.mov)
+![Video_2](https://user-images.githubusercontent.com/98035309/228310120-373e2d19-2a21-452a-8715-2251733ae77e.mov)
 
 3. go through shaders - s or S cycles through different shaders:
     normals
@@ -63,13 +63,13 @@ Features:
     vroom
     wiggle
     color-change
-![Video_3](videos/allShaders.mov)
+![Video_3](https://user-images.githubusercontent.com/98035309/228310332-d812e7d8-b48e-426c-b862-ef0cfbe23b54.mov)
 
 4. camera movement - Left-click-drag orbits the camera around the model:
-![Video_4](videos/camMove.mov)
+![Video_4](https://user-images.githubusercontent.com/98035309/228310430-acfbacce-b6f9-47cc-a138-f85401cbddbc.mov)
 
 5. z or x - zooms in and out of the model
-![Video_5](videos/zoom.mov)
+![Video_5](https://user-images.githubusercontent.com/98035309/228310508-1f361b28-6bd0-45fc-89e3-736b2546fc08.mov)
 
 ## Unique features 
 
@@ -86,7 +86,7 @@ Unique Features:
 ![Image_3](videos/glass.png)
 
 4. Vroom shader - Vertices animated to move mesh forwards:
-![Video_6](videos/vroom.mov)
+![Video_6](https://user-images.githubusercontent.com/98035309/228310655-1c89c157-9766-408d-b5cb-30dc77b01fc0.mov)
 
 5. Color change shader - Gradients/Changes the color of the object:
-![Video_7](videos/colorChange.mov)
+![Video_7](https://user-images.githubusercontent.com/98035309/228310749-17aa4e58-e4a6-4abb-b9ea-db804233e8d1.mov)
